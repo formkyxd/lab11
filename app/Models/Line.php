@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Line extends Model
 {
-    public $timestamps = false;  
+    public $timestamps = false;
+
     protected $table = 'lines';
 
     protected $fillable = [
@@ -15,15 +16,15 @@ class Line extends Model
         'start_time_operation',
         'end_time_operation',
         'type',
-        'map'
+        'map',
     ];
 
-    public function stations()
+    public function stations(): HasMany
     {
         return $this->hasMany(Station::class);
     }
 
-    public function vehicles()
+    public function vehicles(): HasMany
     {
         return $this->hasMany(Vehicle::class);
     }

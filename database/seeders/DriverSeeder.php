@@ -1,9 +1,10 @@
 <?php
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Driver;
 use App\Models\Vehicle;
+use Illuminate\Database\Seeder;
 
 class DriverSeeder extends Seeder
 {
@@ -43,20 +44,20 @@ class DriverSeeder extends Seeder
         foreach ($vehicles as $index => $vehicle) {
             $gender = $index % 3 === 0 ? 'F' : 'M'; // каждый третий — женщина
 
-            $lastName   = $lastNames[$gender][array_rand($lastNames[$gender])];
-            $firstName  = $firstNames[$gender][array_rand($firstNames[$gender])];
+            $lastName = $lastNames[$gender][array_rand($lastNames[$gender])];
+            $firstName = $firstNames[$gender][array_rand($firstNames[$gender])];
             $patronymic = $patronymics[$gender][array_rand($patronymics[$gender])];
 
-            $birthYear  = rand(1965, 1995);
+            $birthYear = rand(1965, 1995);
             $birthMonth = rand(1, 12);
-            $birthDay   = rand(1, 28);
+            $birthDay = rand(1, 28);
 
             Driver::create([
-                'name'       => "$lastName $firstName $patronymic",
+                'name' => "$lastName $firstName $patronymic",
                 'birth_date' => sprintf('%04d-%02d-%02d', $birthYear, $birthMonth, $birthDay),
-                'email'      => strtolower($lastName) . $index . '@gts.ru',
-                'phone'      => $phones[$index % count($phones)],
-                'avatar'     => null,
+                'email' => strtolower($lastName).$index.'@gts.ru',
+                'phone' => $phones[$index % count($phones)],
+                'avatar' => null,
                 'vehicle_id' => $vehicle->id,
             ]);
         }

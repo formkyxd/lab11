@@ -1,33 +1,30 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Driver;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
-class DriverController extends Controller
+class DriverController extends AdminController
 {
     public function index()
     {
         return view('driver', [
-            'drivers'  => Driver::with('vehicle')->get(),
-            // Только свободные ТС (без водителя)
+            'drivers' => Driver::with('vehicle')->get(),
             'vehicles' => Vehicle::whereDoesntHave('driver')->get(),
         ]);
     }
 
     public function create()
     {
-        return view('driver', [
-            'drivers'  => Driver::with('vehicle')->get(),
-            'vehicles' => Vehicle::whereDoesntHave('driver')->get(),
-        ]);
+        return $this->index();
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'Driver.name'       => [
+            'Driver.name' => [
                 'required',
                 'max:45',
                 'regex:/^[A-Za-zА-Яа-яЁё\s\-]+$/u',
@@ -38,28 +35,27 @@ class DriverController extends Controller
                 'before:today',
                 'after:1900-01-01',
             ],
-            'Driver.email'      => [
+            'Driver.email' => [
                 'required',
                 'email',
                 'max:50',
                 'unique:drivers,email',
             ],
-            'Driver.phone'      => [
+            'Driver.phone' => [
                 'required',
                 'max:40',
                 'regex:/^[\+\d\s\-\(\)]+$/',
             ],
-            'vehicle_id'        => 'nullable|exists:vehicles,id',
+            'vehicle_id' => 'nullable|exists:vehicles,id',
         ], [
-            'Driver.name.required'    => 'ФИО обязательно',
-            'Driver.name.regex'       => 'ФИО должно содержать только буквы, пробелы и дефисы',
+            'Driver.name.required' => 'ФИО обязательно',
+            'Driver.name.regex' => 'ФИО должно содержать только буквы, пробелы и дефисы',
             'Driver.birth_date.before' => 'Дата рождения должна быть в прошлом',
-            'Driver.birth_date.after'  => 'Некорректная дата рождения',
-            'Driver.email.unique'     => 'Водитель с таким email уже существует',
-            'Driver.phone.regex'      => 'Телефон содержит недопустимые символы',
+            'Driver.birth_date.after' => 'Некорректная дата рождения',
+            'Driver.email.unique' => 'Водитель с таким email уже существует',
+            'Driver.phone.regex' => 'Телефон содержит недопустимые символы',
         ]);
 
-        // Водитель может быть привязан только к одному ТС
         if ($request->vehicle_id) {
             $busy = Driver::where('vehicle_id', $request->vehicle_id)->exists();
             if ($busy) {
@@ -75,11 +71,11 @@ class DriverController extends Controller
         }
 
         Driver::create([
-            'name'       => $request->input('Driver.name'),
+            'name' => $request->input('Driver.name'),
             'birth_date' => $request->input('Driver.birth_date'),
-            'email'      => $request->input('Driver.email'),
-            'phone'      => $request->input('Driver.phone'),
-            'avatar'     => $avatar,
+            'email' => $request->input('Driver.email'),
+            'phone' => $request->input('Driver.phone'),
+            'avatar' => $avatar,
             'vehicle_id' => $request->input('vehicle_id') ?: null,
         ]);
 
@@ -89,9 +85,8 @@ class DriverController extends Controller
     public function edit(Driver $driver)
     {
         return view('driver', [
-            'driver'   => $driver,
-            'drivers'  => Driver::with('vehicle')->get(),
-            // Свободные ТС + текущее ТС этого водителя
+            'driver' => $driver,
+            'drivers' => Driver::with('vehicle')->get(),
             'vehicles' => Vehicle::whereDoesntHave('driver')
                 ->orWhere('id', $driver->vehicle_id)
                 ->get(),
@@ -101,7 +96,7 @@ class DriverController extends Controller
     public function update(Request $request, Driver $driver)
     {
         $request->validate([
-            'Driver.name'       => [
+            'Driver.name' => [
                 'required',
                 'max:45',
                 'regex:/^[A-Za-zА-Яа-яЁё\s\-]+$/u',
@@ -112,27 +107,26 @@ class DriverController extends Controller
                 'before:today',
                 'after:1900-01-01',
             ],
-            'Driver.email'      => [
+            'Driver.email' => [
                 'required',
                 'email',
                 'max:50',
-                'unique:drivers,email,' . $driver->id,
+                'unique:drivers,email,'.$driver->id,
             ],
-            'Driver.phone'      => [
+            'Driver.phone' => [
                 'required',
                 'max:40',
                 'regex:/^[\+\d\s\-\(\)]+$/',
             ],
-            'vehicle_id'        => 'nullable|exists:vehicles,id',
+            'vehicle_id' => 'nullable|exists:vehicles,id',
         ], [
-            'Driver.name.regex'        => 'ФИО должно содержать только буквы, пробелы и дефисы',
+            'Driver.name.regex' => 'ФИО должно содержать только буквы, пробелы и дефисы',
             'Driver.birth_date.before' => 'Дата рождения должна быть в прошлом',
-            'Driver.birth_date.after'  => 'Некорректная дата рождения',
-            'Driver.email.unique'      => 'Водитель с таким email уже существует',
-            'Driver.phone.regex'       => 'Телефон содержит недопустимые символы',
+            'Driver.birth_date.after' => 'Некорректная дата рождения',
+            'Driver.email.unique' => 'Водитель с таким email уже существует',
+            'Driver.phone.regex' => 'Телефон содержит недопустимые символы',
         ]);
 
-        // Водитель может быть привязан только к одному ТС (исключая текущего водителя)
         if ($request->vehicle_id) {
             $busy = Driver::where('vehicle_id', $request->vehicle_id)
                 ->where('id', '!=', $driver->id)
@@ -145,10 +139,10 @@ class DriverController extends Controller
         }
 
         $data = [
-            'name'       => $request->input('Driver.name'),
+            'name' => $request->input('Driver.name'),
             'birth_date' => $request->input('Driver.birth_date'),
-            'email'      => $request->input('Driver.email'),
-            'phone'      => $request->input('Driver.phone'),
+            'email' => $request->input('Driver.email'),
+            'phone' => $request->input('Driver.phone'),
             'vehicle_id' => $request->input('vehicle_id') ?: null,
         ];
 
@@ -164,6 +158,7 @@ class DriverController extends Controller
     public function destroy(Driver $driver)
     {
         $driver->delete();
+
         return redirect()->route('driver')->with('success', 'Водитель удалён');
     }
 

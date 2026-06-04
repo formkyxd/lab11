@@ -1,8 +1,9 @@
 <?php
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Line;
+use Illuminate\Database\Seeder;
 
 class LineSeeder extends Seeder
 {
@@ -21,11 +22,11 @@ class LineSeeder extends Seeder
 
         foreach ($lines as [$code, $start, $end, $type]) {
             Line::create([
-                'code'                 => $code,
+                'code' => $code,
                 'start_time_operation' => $start,
-                'end_time_operation'   => $end,
-                'type'                 => $type,
-                'map'                  => '',
+                'end_time_operation' => $end,
+                'type' => $type,
+                'map' => '',
             ]);
         }
     }

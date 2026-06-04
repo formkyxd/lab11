@@ -1,9 +1,10 @@
 <?php
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Station;
 use App\Models\Line;
+use App\Models\Station;
+use Illuminate\Database\Seeder;
 
 class StationSeeder extends Seeder
 {
@@ -35,9 +36,9 @@ class StationSeeder extends Seeder
             $count = rand(4, 7);
             for ($pos = 1; $pos <= $count; $pos++) {
                 Station::create([
-                    'name'             => $stationNames[$nameIndex % count($stationNames)],
+                    'name' => $stationNames[$nameIndex % count($stationNames)],
                     'position_station' => $pos,
-                    'line_id'          => $line->id,
+                    'line_id' => $line->id,
                 ]);
                 $nameIndex++;
             }

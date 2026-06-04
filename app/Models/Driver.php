@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Driver extends Model
 {
@@ -14,10 +15,10 @@ class Driver extends Model
         'email',
         'phone',
         'avatar',
-        'vehicle_id'
+        'vehicle_id',
     ];
 
-    public function vehicle()
+    public function vehicle(): BelongsTo
     {
         return $this->belongsTo(Vehicle::class);
     }

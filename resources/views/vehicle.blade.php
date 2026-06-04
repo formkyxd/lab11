@@ -201,13 +201,13 @@
                                     Маршрут
                                 </label>
 
-                                <select name="line_id" id="line_id" onchange="syncTypeWithLine(this.value)">
+                                <select name="line_id" id="line_id">
                                     <option value="">Не назначен</option>
                                     @foreach($lines as $line)
                                         <option
                                             value="{{ $line->id }}"
                                             {{ old('line_id') == $line->id ? 'selected' : '' }}>
-                                            {{ $line->code }} ({{ ['Tram'=>'Трамвай','Bus'=>'Автобус','Nightliner'=>'Маршрутное такси'][$line->type] ?? $line->type }})
+                                            {{ $line->code }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -402,17 +402,15 @@
         block.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Если вернулись ошибки валидации — держим форму открытой
-    // Типы линий из БД
-    var linesData = {!! $lines_json ?? '[]' !!};
+    // var linesData = {!! $lines_json ?? '[]' !!};
 
-    function syncTypeWithLine(lineId) {
-        if (!lineId) return;
-        var line = linesData.find(function(l) { return l.id == lineId; });
-        if (line) {
-            document.getElementById('Vehicle_type').value = line.type;
-        }
-    }
+    // function syncTypeWithLine(lineId) {
+    //     if (!lineId) return;
+    //     var line = linesData.find(function(l) { return l.id == lineId; });
+    //     if (line) {
+    //         document.getElementById('Vehicle_type').value = line.type;
+    //     }
+    // }
 
     @if($errors->any())
     document.addEventListener('DOMContentLoaded', function () {
